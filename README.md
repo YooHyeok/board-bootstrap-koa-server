@@ -1,4 +1,4 @@
-# KOA INSTALL & RUN
+# *KOA INSTALL & RUN*
 <details>
 <summary>펼치기/접기</summary>
 <br>
@@ -30,7 +30,7 @@
   ```
 </details>
 
-# nodemon  
+# *Nodemon*  
 <details>
 <summary>펼치기/접기</summary>
 <br>
@@ -71,9 +71,9 @@
   ```
 </details>
 
-# KOA
+# *KOA*
 
-## app.use()
+## *app.use()*
 koa는 middleware 함수의 실행으로 이루어져 있다.  
 app.use() 함수는 인자로받은 콜백함수를 app middleware 배열에 등록해준다.  
 실제 깃허브에올라온 소스코드를 확인해본다.
@@ -151,3 +151,129 @@ ctx와 next
   5. 예리
   멤버 소개 완료.
   ```
+
+  ## router
+  서버에서 경로를 설정한다.
+
+  ### install
+  ```bash
+  npm install koa-router
+  ```
+
+# *데이터베이스 연동*
+
+## KNEXT 
+- install
+  ```bash
+  npm install knex --save
+  ```
+
+- src/database/index.js
+  ```javascript
+  var db = require('knex')({
+    client: 'mysql2',
+    connection: {
+      host : '127.0.0.1',
+      user : 'root',
+      password : '1234',
+      database : 'vue_board'
+    }
+  });
+
+  const ret = db.raw('select now()')
+  .then((item) => {console.log(item[0])})
+
+  module.exports = db;
+  ```
+
+## MYSQL
+- install
+  ```bash
+  npm install mysql2 --save
+  ```
+
+- Query
+  ```SQL
+  CREATE TABLE `USER` (
+  user_id INT(11) AUTO_INCREMENT NOT NULL,
+  user_name VARCHAR(32) NOT NULL,
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME NOT NULL,
+  PRIMARY KEY (user_id)
+  );
+
+  CREATE TABLE CONTENT (
+  content_id INT(11) AUTO_INCREMENT NOT NULL,
+  user_id INT(11) NOT NULL,
+  title VARCHAR(32) NOT NULL,
+  content TEXT NOT NULL,
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME NOT NULL,
+  PRIMARY KEY (content_id)
+  );
+
+  INSERT INTO `USER` VALUES (null, 'hyeok', now(), null);
+  ```
+
+## dotenv
+
+- install
+  ```bash
+  npm install dotenv
+  ```
+- .env
+  ```env
+  DB_PASSWORD = 1234
+  ```
+
+- .js
+  ```javascript
+  require('dotenv').config();
+
+  const connection = {
+    password : process.env.DB_PASSWORD,
+  }
+
+  console.log(connection.password)
+  ```
+
+## model 구성 및 server 적용
+
+  - src/model/index.js
+    ```javascript
+    const db = require('../database')
+
+    const self = {}
+
+    self.findUser = async () => {
+      const ret = await db.raw('SELECT * FROM USER');
+      return ret[0]
+    }
+
+    module.exports = self;
+    ```
+  - src/index.js
+    ```javascript
+    const Koa = require('koa');
+    const Router = require('koa-router');
+    const app = new Koa();
+    const router = new Router();
+
+    const db = require('./model'); // db model 추가
+
+    router.get('/', async (ctx) => {
+      const ret = await db.findUser() // model로부터 함수 호출
+      ctx.body = ret
+    })
+
+
+    app.use(router.routes());
+    app.use(router.allowedMethods());
+
+    app.listen(3000);
+    ```
+
+
+
+
+
