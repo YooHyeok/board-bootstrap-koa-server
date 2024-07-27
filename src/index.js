@@ -1,11 +1,14 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 
+const db = require('./model');
+
 const app = new Koa();
 const router = new Router();
 
-router.get('/', (ctx) => {
-  ctx.body = '메인페이지 입니다.'
+router.get('/', async (ctx) => {
+  const ret = await db.findUser()
+  ctx.body = ret
 })
 
 // url : /other/동방신기
