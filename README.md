@@ -160,6 +160,27 @@ ctx와 next
   npm install koa-router
   ```
 
+# *roter: 파라미터 & URL*
+- pathvariable 형태
+  ```javascript
+  // url : /other/동방신기
+  router.get('/other/:group', (ctx) => {
+    const {group} = ctx.params; // group: 동방신기
+    ctx.body = `${group}의 페이지 입니다.` // 동방신기의 페이지입니다.
+  })
+  ```
+- queryParam 형태
+  ```javascript
+
+  // url : /member?name=아이린&id=3 | query : { name: '아이린', id: '3' }
+  router.get('/member', (ctx) => {
+    const {name} = ctx.query; // 아이린
+    const {id} = ctx.query; // 3
+    console.log(ctx.query)
+    ctx.body = `레드벨벳 ${id} 번째 멤버 ${name}의 페이지 입니다.`
+  })
+  ```
+
 # *데이터베이스 연동*
 
 ## KNEXT 
@@ -274,6 +295,59 @@ ctx와 next
     ```
 
 
+# *KOA/CORS*
+- install
+  ```bash
+  npm install @koa/cors
+  ```
+
+- src/index.js
+  ```javascript
+  const Koa = require("koa")
+  const cors = require("@koa/cors")
+  const app = new Koa();
+  app.use(cors());
+
+  /**
+   * 라우터 적용
+   */
+
+  app.listen(3000);
+  ```
+
+# *KOA-BODY*
+  글을 등록하거나 수정할 때 POST요청시 클라이언트로 부터 받은 데이터를 쉽게 파싱해서 가져올 수 있도록 해준다.
 
 
+- install
+  ```bash
+  npm install koa-body
+  ```
 
+- src/index.js
+  ```javascript
+  const Koa = require("koa");
+  const Router = require("koa-router");
+  const cors = require("@koa/cors");
+  const db = require("./model");
+  const koaBody = require('koa-body'); // kodBody
+  
+  /**
+   * router의 post 함수를 사용할 때 두번째 인자에 콜백함수로 사용한다.
+   */
+  const bodyParser = () => {
+    return koaBody({ multipart: true }); // koaBody 파일관련 옵션 on?
+  }
+  const app = new Koa();
+  const router = new Router();
+  app.use(cors());
+
+  const addUser = async ctx => {
+    const { user_name } = ctx.request.body;
+    const ret = await db.addUser({ user_name });
+
+    ctx.body = ret;
+  };
+
+  router.post("/add/user", bodyParser(), addUser); // koaBody콜백함수 
+  ```
