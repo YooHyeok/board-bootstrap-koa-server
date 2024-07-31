@@ -227,7 +227,7 @@ ctx와 next
   content_id INT(11) AUTO_INCREMENT NOT NULL,
   user_id INT(11) NOT NULL,
   title VARCHAR(32) NOT NULL,
-  content TEXT NOT NULL,
+  context TEXT NOT NULL,
   created_at DATETIME NOT NULL,
   updated_at DATETIME NOT NULL,
   PRIMARY KEY (content_id)
