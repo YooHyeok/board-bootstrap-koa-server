@@ -219,7 +219,7 @@ ctx와 next
   user_id INT(11) AUTO_INCREMENT NOT NULL,
   user_name VARCHAR(32) NOT NULL,
   created_at DATETIME NOT NULL,
-  updated_at DATETIME NOT NULL,
+  updated_at DATETIME ,
   PRIMARY KEY (user_id)
   );
 
@@ -229,8 +229,28 @@ ctx와 next
   title VARCHAR(32) NOT NULL,
   context TEXT NOT NULL,
   created_at DATETIME NOT NULL,
-  updated_at DATETIME NOT NULL,
+  updated_at DATETIME ,
   PRIMARY KEY (content_id)
+  );
+
+  CREATE TABLE COMMENT (
+  comment_id INT(11) AUTO_INCREMENT NOT NULL,
+  user_id INT(11) NOT NULL,
+  content_id INT(11) NOT NULL,
+  context TEXT NOT NULL,
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME ,
+  PRIMARY KEY (comment_id)
+  );
+
+  CREATE TABLE SUB_COMMENT (
+  sub_comment_id INT(11) AUTO_INCREMENT NOT NULL,
+  user_id INT(11) NOT NULL,
+  comment_id INT(11) NOT NULL,
+  context TEXT NOT NULL,
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME ,
+  PRIMARY KEY (sub_comment_id)
   );
 
   INSERT INTO `USER` VALUES (null, 'hyeok', now(), null);
